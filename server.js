@@ -42,11 +42,15 @@ if (TWILIO_SID && TWILIO_AUTH && TWILIO_PHONE &&
 // Initialize Express
 const app = express();
 const server = http.createServer(app);
+
+// Socket.IO setup with better Vercel compatibility
 const io = socketIO(server, {
   cors: {
     origin: process.env.CLIENT_URL || '*',
     methods: ['GET', 'POST']
-  }
+  },
+  transports: ['websocket', 'polling'],
+  allowEIO3: true
 });
 
 // Middleware Setup
@@ -458,11 +462,14 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Start Server
-const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
-  console.log(`🚀 Kavach Server running on port ${PORT}`);
-  console.log(`📱 Open http://localhost:${PORT} in your browser`);
-});
+// Start Server (only if not in Vercel serverless environment)
+if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+  const PORT = process.env.PORT || 3000;
+  server.listen(PORT, () => {
+    console.log(`🚀 Kavach Server running on port ${PORT}`);
+    console.log(`📱 Open http://localhost:${PORT} in your browser`);
+  });
+}
 
-module.exports = { app, io };
+// Export for Vercel serverless
+module.exports = app;

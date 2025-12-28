@@ -1,1 +1,2 @@
-module.exports = require('./server.js');
+// Vercel serverless function entry point
+module.exports = require('../server.js');
