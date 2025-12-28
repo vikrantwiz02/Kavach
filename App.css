@@ -118,6 +118,186 @@
   --shadow-2xl: 0 25px 60px rgba(0, 0, 0, 0.8);
 }
 
+/* Dark Theme Variant: Sunset Blaze 🌅 */
+[data-theme="dark-sunset"] {
+  --deep-sea-teal: #ff006e;
+  --deep-sea-teal-light: #ff4d8f;
+  --deep-sea-teal-dark: #d90368;
+  --soft-clay-coral: #fb5607;
+  --soft-clay-coral-light: #ff8500;
+  --soft-clay-coral-dark: #e63946;
+  
+  --bg-primary: #1a0a0f;
+  --bg-secondary: #2d1b27;
+  --bg-tertiary: #4a2b3e;
+  --bg-card: rgba(74, 43, 62, 0.9);
+  --text-primary: #ffe5ec;
+  --text-secondary: #ffccd5;
+  --text-tertiary: #ffb3c1;
+  --border-color: rgba(255, 0, 110, 0.4);
+  --shadow-color: rgba(26, 10, 15, 0.8);
+  --glass-bg: rgba(45, 27, 39, 0.8);
+  --glass-border: rgba(255, 77, 143, 0.3);
+  --overlay-bg: rgba(26, 10, 15, 0.9);
+  
+  --shadow-sm: 0 2px 8px rgba(255, 0, 110, 0.3);
+  --shadow: 0 4px 16px rgba(255, 0, 110, 0.4);
+  --shadow-md: 0 8px 24px rgba(255, 0, 110, 0.5);
+  --shadow-lg: 0 12px 40px rgba(255, 0, 110, 0.6);
+  --shadow-xl: 0 20px 60px rgba(255, 0, 110, 0.7);
+  --shadow-2xl: 0 30px 80px rgba(255, 0, 110, 0.8);
+}
+
+/* Dark Theme Variant: Electric Dreams ⚡ */
+[data-theme="dark-electric"] {
+  --deep-sea-teal: #00ff41;
+  --deep-sea-teal-light: #39ff14;
+  --deep-sea-teal-dark: #00cc33;
+  --soft-clay-coral: #00d9ff;
+  --soft-clay-coral-light: #00f5ff;
+  --soft-clay-coral-dark: #00a8cc;
+  
+  --bg-primary: #000814;
+  --bg-secondary: #001d3d;
+  --bg-tertiary: #003566;
+  --bg-card: rgba(0, 53, 102, 0.9);
+  --text-primary: #e0fbfc;
+  --text-secondary: #c7f9ff;
+  --text-tertiary: #98f5e1;
+  --border-color: rgba(0, 255, 65, 0.5);
+  --shadow-color: rgba(0, 8, 20, 0.9);
+  --glass-bg: rgba(0, 29, 61, 0.8);
+  --glass-border: rgba(0, 255, 65, 0.3);
+  --overlay-bg: rgba(0, 8, 20, 0.95);
+  
+  --shadow-sm: 0 2px 12px rgba(0, 255, 65, 0.4);
+  --shadow: 0 4px 20px rgba(0, 255, 65, 0.5);
+  --shadow-md: 0 8px 32px rgba(0, 255, 65, 0.6);
+  --shadow-lg: 0 12px 48px rgba(0, 255, 65, 0.7);
+  --shadow-xl: 0 20px 72px rgba(0, 255, 65, 0.8);
+  --shadow-2xl: 0 30px 96px rgba(0, 255, 65, 0.9);
+}
+
+/* Dark Theme Variant: Aurora Borealis 🌌 */
+[data-theme="dark-aurora"] {
+  --deep-sea-teal: #4cc9f0;
+  --deep-sea-teal-light: #7209b7;
+  --deep-sea-teal-dark: #3a0ca3;
+  --soft-clay-coral: #f72585;
+  --soft-clay-coral-light: #b5179e;
+  --soft-clay-coral-dark: #560bad;
+  
+  --bg-primary: #0f0326;
+  --bg-secondary: #1a0b3e;
+  --bg-tertiary: #2d1b69;
+  --bg-card: rgba(45, 27, 105, 0.9);
+  --text-primary: #e0c3fc;
+  --text-secondary: #d8bbff;
+  --text-tertiary: #c8b6ff;
+  --border-color: rgba(76, 201, 240, 0.5);
+  --shadow-color: rgba(15, 3, 38, 0.9);
+  --glass-bg: rgba(26, 11, 62, 0.8);
+  --glass-border: rgba(76, 201, 240, 0.3);
+  --overlay-bg: rgba(15, 3, 38, 0.95);
+  
+  --shadow-sm: 0 2px 12px rgba(114, 9, 183, 0.4);
+  --shadow: 0 4px 20px rgba(114, 9, 183, 0.5);
+  --shadow-md: 0 8px 32px rgba(114, 9, 183, 0.6);
+  --shadow-lg: 0 12px 48px rgba(114, 9, 183, 0.7);
+  --shadow-xl: 0 20px 72px rgba(114, 9, 183, 0.8);
+  --shadow-2xl: 0 30px 96px rgba(114, 9, 183, 0.9);
+}
+
+/* Dark Theme Variant: Toxic Glow ☢️ */
+[data-theme="dark-toxic"] {
+  --deep-sea-teal: #ccff00;
+  --deep-sea-teal-light: #d4ff1a;
+  --deep-sea-teal-dark: #aacc00;
+  --soft-clay-coral: #ff006e;
+  --soft-clay-coral-light: #ff4081;
+  --soft-clay-coral-dark: #c51162;
+  
+  --bg-primary: #0d1b0d;
+  --bg-secondary: #1a331a;
+  --bg-tertiary: #2d4d2d;
+  --bg-card: rgba(45, 77, 45, 0.9);
+  --text-primary: #e6ffe6;
+  --text-secondary: #ccffcc;
+  --text-tertiary: #b3ffb3;
+  --border-color: rgba(204, 255, 0, 0.5);
+  --shadow-color: rgba(13, 27, 13, 0.9);
+  --glass-bg: rgba(26, 51, 26, 0.8);
+  --glass-border: rgba(204, 255, 0, 0.3);
+  --overlay-bg: rgba(13, 27, 13, 0.95);
+  
+  --shadow-sm: 0 2px 12px rgba(204, 255, 0, 0.4);
+  --shadow: 0 4px 20px rgba(204, 255, 0, 0.5);
+  --shadow-md: 0 8px 32px rgba(204, 255, 0, 0.6);
+  --shadow-lg: 0 12px 48px rgba(204, 255, 0, 0.7);
+  --shadow-xl: 0 20px 72px rgba(204, 255, 0, 0.8);
+  --shadow-2xl: 0 30px 96px rgba(204, 255, 0, 0.9);
+}
+
+/* Dark Theme Variant: Lava Flow 🌋 */
+[data-theme="dark-lava"] {
+  --deep-sea-teal: #ff4500;
+  --deep-sea-teal-light: #ff6b35;
+  --deep-sea-teal-dark: #cc3700;
+  --soft-clay-coral: #ffdd00;
+  --soft-clay-coral-light: #ffe654;
+  --soft-clay-coral-dark: #ccb100;
+  
+  --bg-primary: #1a0500;
+  --bg-secondary: #330d00;
+  --bg-tertiary: #4d1a00;
+  --bg-card: rgba(77, 26, 0, 0.9);
+  --text-primary: #fff5e6;
+  --text-secondary: #ffe6cc;
+  --text-tertiary: #ffd4a3;
+  --border-color: rgba(255, 69, 0, 0.5);
+  --shadow-color: rgba(26, 5, 0, 0.9);
+  --glass-bg: rgba(51, 13, 0, 0.8);
+  --glass-border: rgba(255, 107, 53, 0.3);
+  --overlay-bg: rgba(26, 5, 0, 0.95);
+  
+  --shadow-sm: 0 2px 12px rgba(255, 69, 0, 0.4);
+  --shadow: 0 4px 20px rgba(255, 69, 0, 0.5);
+  --shadow-md: 0 8px 32px rgba(255, 69, 0, 0.6);
+  --shadow-lg: 0 12px 48px rgba(255, 69, 0, 0.7);
+  --shadow-xl: 0 20px 72px rgba(255, 69, 0, 0.8);
+  --shadow-2xl: 0 30px 96px rgba(255, 69, 0, 0.9);
+}
+
+/* Dark Theme Variant: Deep Sea 🐋 */
+[data-theme="dark-deepsea"] {
+  --deep-sea-teal: #00fff5;
+  --deep-sea-teal-light: #00e5d4;
+  --deep-sea-teal-dark: #00ccbc;
+  --soft-clay-coral: #4361ee;
+  --soft-clay-coral-light: #7209b7;
+  --soft-clay-coral-dark: #3f37c9;
+  
+  --bg-primary: #000814;
+  --bg-secondary: #001233;
+  --bg-tertiary: #002855;
+  --bg-card: rgba(0, 40, 85, 0.9);
+  --text-primary: #caf0f8;
+  --text-secondary: #90e0ef;
+  --text-tertiary: #48cae4;
+  --border-color: rgba(0, 255, 245, 0.5);
+  --shadow-color: rgba(0, 8, 20, 0.9);
+  --glass-bg: rgba(0, 18, 51, 0.8);
+  --glass-border: rgba(0, 255, 245, 0.3);
+  --overlay-bg: rgba(0, 8, 20, 0.95);
+  
+  --shadow-sm: 0 2px 12px rgba(0, 255, 245, 0.4);
+  --shadow: 0 4px 20px rgba(0, 255, 245, 0.5);
+  --shadow-md: 0 8px 32px rgba(0, 255, 245, 0.6);
+  --shadow-lg: 0 12px 48px rgba(0, 255, 245, 0.7);
+  --shadow-xl: 0 20px 72px rgba(0, 255, 245, 0.8);
+  --shadow-2xl: 0 30px 96px rgba(0, 255, 245, 0.9);
+}
+
 /* Auto Dark Mode based on system preference */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
@@ -166,40 +346,112 @@ body {
   transition: background-color var(--transition-base), color var(--transition-base);
 }
 
-/* Theme Toggle Button */
-.theme-toggle {
+/* Theme Selector */
+.theme-selector-container {
   position: fixed;
   top: var(--space-lg);
   right: var(--space-lg);
   z-index: 1000;
-  width: 50px;
+}
+
+.theme-toggle {
+  min-width: 160px;
   height: 50px;
+  padding: 0 var(--space-lg);
   border-radius: var(--rounded-full);
   background: var(--glass-bg);
   backdrop-filter: blur(var(--glass-blur));
-  border: 1px solid var(--glass-border);
+  border: 2px solid var(--glass-border);
   box-shadow: var(--shadow-md);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all var(--transition-base);
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: 0.95rem;
 }
 
 .theme-toggle:hover {
-  transform: scale(1.1) rotate(15deg);
+  transform: translateY(-2px);
   box-shadow: var(--shadow-lg);
+  border-color: var(--deep-sea-teal);
 }
 
-.theme-toggle svg {
-  width: 24px;
-  height: 24px;
+.theme-menu {
+  position: absolute;
+  top: 60px;
+  right: 0;
+  min-width: 280px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  border: 2px solid var(--glass-border);
+  border-radius: var(--rounded-lg);
+  box-shadow: var(--shadow-xl);
+  padding: var(--space-sm);
+  animation: slideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.theme-option {
+  width: 100%;
+  padding: var(--space-md);
+  background: transparent;
+  border: 2px solid transparent;
+  border-radius: var(--rounded);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-align: left;
+  margin-bottom: var(--space-xs);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.theme-option:hover {
+  background: var(--bg-tertiary);
+  border-color: var(--deep-sea-teal);
+  transform: translateX(4px);
+}
+
+.theme-option.active {
+  background: var(--bg-tertiary);
+  border-color: var(--deep-sea-teal);
+}
+
+.theme-option-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.theme-option-label {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+}
+
+.theme-checkmark {
   color: var(--deep-sea-teal);
-  transition: transform var(--transition-base);
+  font-weight: 700;
+  font-size: 1.1rem;
 }
 
-.theme-toggle:hover svg {
-  transform: scale(1.2);
+.theme-option-description {
+  font-size: 0.85rem;
+  color: var(--text-tertiary);
+  line-height: 1.4;
 }
 
 /* Loading State */

@@ -17,6 +17,18 @@ const App = () => {
     if (saved) return saved;
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   });
+  const [showThemeMenu, setShowThemeMenu] = useState(false);
+
+  const themeOptions = [
+    { value: 'light', label: '☀️ Light', description: 'Classic bright theme' },
+    { value: 'dark', label: '🌙 Dark', description: 'Original dark theme' },
+    { value: 'dark-sunset', label: '🌅 Sunset Blaze', description: 'Hot pink & orange fire' },
+    { value: 'dark-electric', label: '⚡ Electric Dreams', description: 'Neon green & cyan energy' },
+    { value: 'dark-aurora', label: '🌌 Aurora Borealis', description: 'Purple, pink & cyan lights' },
+    { value: 'dark-toxic', label: '☢️ Toxic Glow', description: 'Radioactive lime & magenta' },
+    { value: 'dark-lava', label: '🌋 Lava Flow', description: 'Molten orange & yellow heat' },
+    { value: 'dark-deepsea', label: '🐋 Deep Sea', description: 'Bright cyan & electric blue' }
+  ];
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -45,8 +57,29 @@ const App = () => {
     return () => mediaQuery.removeEventListener('change', handleChange);
   }, []);
 
+  useEffect(() => {
+    // Close theme menu when clicking outside
+    const handleClickOutside = (e) => {
+      if (showThemeMenu && !e.target.closest('.theme-selector-container')) {
+        setShowThemeMenu(false);
+      }
+    };
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, [showThemeMenu]);
+
   const toggleTheme = () => {
     setTheme(prev => prev === 'light' ? 'dark' : 'light');
+  };
+
+  const changeTheme = (newTheme) => {
+    setTheme(newTheme);
+    setShowThemeMenu(false);
+  };
+
+  const getCurrentThemeLabel = () => {
+    const current = themeOptions.find(opt => opt.value === theme);
+    return current ? current.label : '🌙 Theme';
   };
 
   const fetchCurrentUser = async (token) => {
@@ -85,23 +118,35 @@ const App = () => {
   return (
     <Router>
       <div className="app">
-        {/* Theme Toggle Button */}
-        <button 
-          className="theme-toggle" 
-          onClick={toggleTheme}
-          aria-label="Toggle theme"
-          title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
-        >
-          {theme === 'light' ? (
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-            </svg>
-          ) : (
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-            </svg>
+        {/* Theme Selector */}
+        <div className="theme-selector-container">
+          <button 
+            className="theme-toggle" 
+            onClick={() => setShowThemeMenu(!showThemeMenu)}
+            aria-label="Select theme"
+            title="Choose your theme"
+          >
+            <span style={{ fontSize: '1rem' }}>{getCurrentThemeLabel()}</span>
+          </button>
+          
+          {showThemeMenu && (
+            <div className="theme-menu">
+              {themeOptions.map(option => (
+                <button
+                  key={option.value}
+                  className={`theme-option ${theme === option.value ? 'active' : ''}`}
+                  onClick={() => changeTheme(option.value)}
+                >
+                  <div className="theme-option-header">
+                    <span className="theme-option-label">{option.label}</span>
+                    {theme === option.value && <span className="theme-checkmark">✓</span>}
+                  </div>
+                  <span className="theme-option-description">{option.description}</span>
+                </button>
+              ))}
+            </div>
           )}
-        </button>
+        </div>
         
         <Routes>
           <Route 
