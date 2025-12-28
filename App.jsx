@@ -15,16 +15,18 @@ const App = () => {
     // Check localStorage first, then system preference
     const saved = localStorage.getItem('theme');
     if (saved) return saved;
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark-aurora' : 'light';
   });
   const [showThemeMenu, setShowThemeMenu] = useState(false);
 
   const themeOptions = [
-    { value: 'light', label: '☀️ Light', description: 'Classic bright theme' },
-    { value: 'dark', label: '🌙 Dark', description: 'Original dark theme' },
+    { value: 'light', label: '☀️ Classic Light', description: 'Teal & coral elegance' },
+    { value: 'light-mint', label: '🌿 Fresh Mint', description: 'Green mint & coral red' },
+    { value: 'light-lavender', label: '💜 Lavender Dream', description: 'Purple & hot pink vibes' },
+    { value: 'light-coral', label: '🌺 Coral Sunset', description: 'Warm coral & orange' },
+    { value: 'dark-aurora', label: '🌌 Aurora Borealis', description: 'Purple, pink & cyan lights' },
     { value: 'dark-sunset', label: '🌅 Sunset Blaze', description: 'Hot pink & orange fire' },
     { value: 'dark-electric', label: '⚡ Electric Dreams', description: 'Neon green & cyan energy' },
-    { value: 'dark-aurora', label: '🌌 Aurora Borealis', description: 'Purple, pink & cyan lights' },
     { value: 'dark-toxic', label: '☢️ Toxic Glow', description: 'Radioactive lime & magenta' },
     { value: 'dark-lava', label: '🌋 Lava Flow', description: 'Molten orange & yellow heat' },
     { value: 'dark-deepsea', label: '🐋 Deep Sea', description: 'Bright cyan & electric blue' }
@@ -50,7 +52,7 @@ const App = () => {
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     const handleChange = (e) => {
       if (!localStorage.getItem('theme')) {
-        setTheme(e.matches ? 'dark' : 'light');
+        setTheme(e.matches ? 'dark-aurora' : 'light');
       }
     };
     mediaQuery.addEventListener('change', handleChange);
