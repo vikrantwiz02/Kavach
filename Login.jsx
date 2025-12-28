@@ -40,36 +40,31 @@ const Login = ({ onLogin }) => {
   return (
     <div className="auth-container">
       <div className="auth-card">
-        <div className="auth-header">
-          <div className="auth-logo">K</div>
-          <h1 className="auth-title">Welcome to Kavach</h1>
-          <p className="auth-subtitle">Your shield of protection awaits</p>
-        </div>
+        <h2>Welcome to Kavach</h2>
+        <p>Your shield of protection awaits</p>
 
         {error && <div className="error-message">{error}</div>}
 
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="form-group">
-            <label className="form-label">Email Address</label>
+            <label>Email Address</label>
             <input
               type="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="form-input"
               placeholder="your.email@example.com"
               required
             />
           </div>
 
           <div className="form-group">
-            <label className="form-label">Password</label>
+            <label>Password</label>
             <input
               type="password"
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className="form-input"
               placeholder="Enter your password"
               required
             />
@@ -77,17 +72,16 @@ const Login = ({ onLogin }) => {
 
           <button 
             type="submit" 
-            className="auth-button" 
+            className="btn-primary" 
             disabled={loading}
-            style={{ opacity: loading ? 0.7 : 1 }}
           >
             {loading ? 'Signing In...' : 'Sign In'}
           </button>
         </form>
 
-        <div className="auth-footer">
+        <div className="auth-link">
           Don't have an account?{' '}
-          <Link to="/register" className="auth-link">
+          <Link to="/register">
             Create Account
           </Link>
         </div>

@@ -6,92 +6,106 @@ const Dashboard = ({ user, onLogout }) => {
   const [liquidCoreHover, setLiquidCoreHover] = useState(false);
 
   return (
-    <div className="dashboard-container">
-      <header className="dashboard-header">
-        <div className="user-info">
+    <div className="dashboard">
+      <div className="dashboard-header">
+        <div className="header-left">
           <div className="user-avatar">{user.name.charAt(0).toUpperCase()}</div>
-          <div className="user-details">
-            <h1>Welcome, {user.name}</h1>
+          <div className="user-info">
+            <h2>Welcome, {user.name}</h2>
             <p>Your protection, our priority</p>
           </div>
         </div>
-        <button onClick={onLogout} className="logout-btn">
-          🔓 Logout
-        </button>
-      </header>
-      
-      {/* Breathing Liquid Core SOS */}
-      <div className="liquid-core-container">
-        <div 
-          className="liquid-core"
-          onMouseEnter={() => setLiquidCoreHover(true)}
-          onMouseLeave={() => setLiquidCoreHover(false)}
-          onClick={() => navigate('/sos')}
-        >
-          <div className="liquid-core-inner">
-            <div className="liquid-core-icon">🛡️</div>
-            <div className="liquid-core-text">SOS</div>
-          </div>
-        </div>
-        <div className="liquid-core-status">
-          {liquidCoreHover ? '✨ Tap to activate emergency protocol' : '🔒 Protected & Ready'}
+        <div className="header-right">
+          <button onClick={onLogout} className="btn-logout">
+            🔓 Logout
+          </button>
         </div>
       </div>
 
-      {/* Feature Cards with Protective Transparency */}
-      <div className="dashboard-features">
-        <div className="feature-card" onClick={() => navigate('/complaint')}>
-          <div className="feature-icon">📝</div>
-          <h2 className="feature-title">Report Incident</h2>
-          <p className="feature-description">
+      <div className="dashboard-grid">
+        <div className="dashboard-card" onClick={() => navigate('/sos')} style={{ cursor: 'pointer' }}>
+          <div className="card-icon">🛡️</div>
+          <h3>SOS Emergency</h3>
+          <p>
+            {liquidCoreHover ? '✨ Tap to activate emergency protocol' : '🔒 Protected & Ready'}
+          </p>
+          <button className="btn-card" onMouseEnter={() => setLiquidCoreHover(true)} onMouseLeave={() => setLiquidCoreHover(false)}>
+            Activate SOS
+          </button>
+        </div>
+
+        <div className="dashboard-card" onClick={() => navigate('/complaint')} style={{ cursor: 'pointer' }}>
+          <div className="card-icon">📝</div>
+          <h3>Report Incident</h3>
+          <p>
             Confidentially document incidents with secure evidence upload and location tracking
           </p>
-          <button className="feature-button">File Report</button>
+          <button className="btn-card">File Report</button>
         </div>
 
         {user.role === 'admin' && (
-          <div className="feature-card" onClick={() => navigate('/admin')}>
-            <div className="feature-icon">⚙️</div>
-            <h2 className="feature-title">Command Center</h2>
-            <p className="feature-description">
+          <div className="dashboard-card" onClick={() => navigate('/admin')} style={{ cursor: 'pointer' }}>
+            <div className="card-icon" style={{ background: 'linear-gradient(135deg, var(--soft-clay-coral), var(--soft-clay-coral-light))' }}>⚙️</div>
+            <h3>Command Center</h3>
+            <p>
               Monitor active alerts, track responses, and manage safety protocols in real-time
             </p>
-            <button className="feature-button admin-button">Access Dashboard</button>
+            <button className="btn-card admin">Access Dashboard</button>
           </div>
         )}
-        
-        <div className="feature-card glass-card">
-          <div className="feature-icon">📞</div>
-          <h2 className="feature-title">Emergency Contacts</h2>
-          <div className="contacts-display">
-            {user.emergencyContacts?.length > 0 ? (
-              user.emergencyContacts.map((contact, index) => (
-                <div key={index} className="contact-compact">
-                  <span className="contact-name">{contact.name}</span>
-                  <a href={`tel:${contact.phone}`} className="contact-phone">
-                    {contact.phone}
-                  </a>
-                </div>
-              ))
-            ) : (
-              <p style={{ color: 'var(--deep-sea-teal-light)', fontSize: '0.9rem' }}>
-                No contacts configured
-              </p>
-            )}
-          </div>
-        </div>
       </div>
 
-      {/* Quick Access Emergency Numbers */}
-      <div className="quick-help glass-card" style={{ marginTop: 'var(--space-xl)', padding: 'var(--space-lg)', maxWidth: '900px', margin: 'var(--space-xl) auto 0' }}>
-        <h3 style={{ color: 'var(--deep-sea-teal)', marginBottom: 'var(--space-md)', fontSize: '1.3rem', fontWeight: 700 }}>
-          🚨 Emergency Services
-        </h3>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 'var(--space-sm)' }}>
-          <a href="tel:100" className="help-link">🚓 Police: 100</a>
-          <a href="tel:1091" className="help-link">👮 Women Helpline: 1091</a>
-          <a href="tel:102" className="help-link">🚑 Ambulance: 102</a>
-          <a href="tel:181" className="help-link">📞 Women Support: 181</a>
+      <div className="emergency-contacts-display">
+        <h3>📞 Emergency Contacts</h3>
+        {user.emergencyContacts?.length > 0 ? (
+          user.emergencyContacts.map((contact, index) => (
+            <div key={index} className="contact-card">
+              <div className="contact-icon">👤</div>
+              <div className="contact-info">
+                <div className="name">{contact.name}</div>
+                <div className="phone">{contact.phone}</div>
+                <div className="relation">{contact.relation}</div>
+              </div>
+            </div>
+          ))
+        ) : (
+          <p style={{ color: 'var(--text-tertiary)', textAlign: 'center', padding: 'var(--space-xl)' }}>
+            No contacts configured
+          </p>
+        )}
+      </div>
+
+      <div className="emergency-contacts-display" style={{ marginTop: 'var(--space-2xl)' }}>
+        <h3>🚨 Emergency Services</h3>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 'var(--space-md)' }}>
+          <a href="tel:100" className="contact-card" style={{ textDecoration: 'none', cursor: 'pointer' }}>
+            <div className="contact-icon">🚓</div>
+            <div className="contact-info">
+              <div className="name">Police</div>
+              <div className="phone">100</div>
+            </div>
+          </a>
+          <a href="tel:1091" className="contact-card" style={{ textDecoration: 'none', cursor: 'pointer' }}>
+            <div className="contact-icon">👮</div>
+            <div className="contact-info">
+              <div className="name">Women Helpline</div>
+              <div className="phone">1091</div>
+            </div>
+          </a>
+          <a href="tel:102" className="contact-card" style={{ textDecoration: 'none', cursor: 'pointer' }}>
+            <div className="contact-icon">🚑</div>
+            <div className="contact-info">
+              <div className="name">Ambulance</div>
+              <div className="phone">102</div>
+            </div>
+          </a>
+          <a href="tel:181" className="contact-card" style={{ textDecoration: 'none', cursor: 'pointer' }}>
+            <div className="contact-icon">📞</div>
+            <div className="contact-info">
+              <div className="name">Women Support</div>
+              <div className="phone">181</div>
+            </div>
+          </a>
         </div>
       </div>
     </div>
