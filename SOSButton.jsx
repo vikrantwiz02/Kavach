@@ -305,99 +305,158 @@ const SOSButton = ({ user }) => {
   };
 
   return (
-    <div className="sos-container">
-      <header className="sos-header">
-        <button onClick={() => navigate('/dashboard')} className="btn-back">← Back</button>
-        <h1>🚨 SOS Emergency</h1>
-      </header>
+    <div className={`sos-container ${isActive ? 'emergency' : ''}`}>
+      <button onClick={() => navigate('/dashboard')} className="back-button">
+        ← Dashboard
+      </button>
 
-      <main className="sos-main">
-        <div className="sos-status">
-          {status && <p className={`status-message ${isActive ? 'active' : ''}`}>{status}</p>}
-          
+      <div className="sos-header">
+        <h1 className="sos-title">Emergency Protocol</h1>
+        <p className="sos-subtitle">
+          {isActive ? 'Alert Active - Help is being notified' : 'Tap the core to activate instant protection'}
+        </p>
+      </div>
+
+      <div className="sos-main">
+        {/* Breathing Liquid Core SOS Button */}
+        <div className="sos-button-wrapper">
+          <button 
+            className={`sos-button ${isActive ? 'active' : ''}`}
+            onClick={isActive ? deactivateSOS : () => activateSOS('button')}
+          >
+            <span className="sos-button-icon">
+              {isActive ? '✓' : '🛡️'}
+            </span>
+            <span className="sos-button-text">
+              {isActive ? 'ACTIVE' : 'SOS'}
+            </span>
+          </button>
+        </div>
+
+        {/* Controls Panel */}
+        <div className="sos-controls">
+          <div 
+            className="voice-toggle"
+            onClick={toggleVoiceActivation}
+          >
+            <div className="voice-toggle-label">
+              <span>🎤</span>
+              <span>Voice Activation</span>
+            </div>
+            <div className={`voice-toggle-switch ${listening ? 'active' : ''}`} />
+          </div>
+
+          {status && (
+            <div className={`sos-status ${isActive ? 'emergency' : ''}`}>
+              {status}
+            </div>
+          )}
+
           {!location && !isActive && (
-            <button onClick={requestLocationPermission} className="btn-location-test">
+            <button 
+              onClick={requestLocationPermission}
+              style={{
+                width: '100%',
+                padding: 'var(--space-md)',
+                background: 'var(--soft-clay-coral-transparent)',
+                border: '2px solid var(--soft-clay-coral)',
+                borderRadius: 'var(--radius-organic-sm)',
+                color: 'var(--soft-clay-coral-dark)',
+                fontWeight: 600,
+                cursor: 'pointer',
+                transition: 'all 0.3s ease'
+              }}
+            >
               📍 Test Location Access
             </button>
           )}
-          
+
           {location && (
-            <div className="location-info">
-              <h3>📍 Current Location</h3>
-              <p>Latitude: {location.latitude.toFixed(6)}</p>
-              <p>Longitude: {location.longitude.toFixed(6)}</p>
-              <p>Accuracy: ±{location.accuracy.toFixed(0)}m</p>
+            <div style={{
+              padding: 'var(--space-md)',
+              background: 'var(--deep-sea-teal-transparent)',
+              borderRadius: 'var(--radius-organic-sm)',
+              border: '2px solid var(--deep-sea-teal-glass)',
+              marginTop: 'var(--space-md)'
+            }}>
+              <h4 style={{ color: 'var(--deep-sea-teal)', marginBottom: 'var(--space-sm)', fontWeight: 700 }}>
+                📍 Location Acquired
+              </h4>
+              <p style={{ fontSize: '0.85rem', color: 'var(--deep-sea-teal-light)', marginBottom: '0.25rem' }}>
+                {location.latitude.toFixed(6)}, {location.longitude.toFixed(6)}
+              </p>
+              <p style={{ fontSize: '0.85rem', color: 'var(--deep-sea-teal-light)', marginBottom: 'var(--space-sm)' }}>
+                Accuracy: ±{location.accuracy.toFixed(0)}m
+              </p>
               <a 
                 href={`https://www.google.com/maps?q=${location.latitude},${location.longitude}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn-map"
+                style={{
+                  display: 'inline-block',
+                  padding: '0.5rem 1rem',
+                  background: 'var(--deep-sea-teal)',
+                  color: 'var(--ice-white)',
+                  borderRadius: 'var(--radius-organic-sm)',
+                  textDecoration: 'none',
+                  fontWeight: 600,
+                  fontSize: '0.9rem',
+                  transition: 'all 0.3s ease'
+                }}
               >
-                View on Map
+                View on Map →
               </a>
             </div>
           )}
         </div>
 
-        <div className="sos-controls">
-          {!isActive ? (
-            <button 
-              className="sos-button"
-              onClick={() => activateSOS('button')}
-            >
-              <div className="sos-button-inner">
-                <span className="sos-icon">🚨</span>
-                <span className="sos-text">PRESS FOR SOS</span>
-              </div>
-            </button>
-          ) : (
-            <button 
-              className="sos-button active"
-              onClick={deactivateSOS}
-            >
-              <div className="sos-button-inner">
-                <span className="sos-icon">✓</span>
-                <span className="sos-text">SOS ACTIVE</span>
-                <span className="sos-subtext">Tap to Stop</span>
-              </div>
-            </button>
-          )}
-
-          <button 
-            className={`voice-button ${listening ? 'active' : ''}`}
-            onClick={toggleVoiceActivation}
-          >
-            {listening ? '🎤 Voice Active' : '🎤 Enable Voice SOS'}
-          </button>
+        {/* Quick Emergency Numbers */}
+        <div className="glass-card" style={{ marginTop: 'var(--space-xl)', padding: 'var(--space-lg)' }}>
+          <h3 style={{ color: 'var(--deep-sea-teal)', marginBottom: 'var(--space-md)', fontSize: '1.2rem', fontWeight: 700 }}>
+            ⚡ Direct Emergency Lines
+          </h3>
+          <div style={{ display: 'grid', gap: 'var(--space-sm)' }}>
+            <a href="tel:100" className="help-link">🚓 Police: 100</a>
+            <a href="tel:1091" className="help-link">👮 Women Helpline: 1091</a>
+            <a href="tel:102" className="help-link">🚑 Ambulance: 102</a>
+          </div>
         </div>
 
-          <div className="sos-info">
-          <h3>How it works:</h3>
-          <ul>
-            <li>✓ One-tap SOS sends alert to emergency contacts immediately</li>
-            <li>✓ Location shared automatically if available</li>
-            <li>✓ Works even if location is unavailable</li>
-            <li>✓ Admins are immediately notified on their dashboard</li>
-            <li>✓ Voice activation: Say "help", "emergency", or "SOS"</li>
-            <li>✓ Your emergency contacts will be notified via SMS/Call</li>
+        {/* Information Panel */}
+        <div className="glass-card" style={{ marginTop: 'var(--space-lg)', padding: 'var(--space-lg)' }}>
+          <h3 style={{ color: 'var(--deep-sea-teal)', marginBottom: 'var(--space-md)', fontSize: '1.1rem', fontWeight: 700 }}>
+            🛡️ How Protection Works
+          </h3>
+          <ul style={{ 
+            listStyle: 'none', 
+            color: 'var(--deep-sea-teal-light)', 
+            fontSize: '0.9rem',
+            lineHeight: '1.8'
+          }}>
+            <li>✓ Instant alert to all emergency contacts</li>
+            <li>✓ Real-time location sharing when available</li>
+            <li>✓ SMS notifications sent automatically</li>
+            <li>✓ Admin dashboard receives immediate notification</li>
+            <li>✓ Voice commands: "help", "emergency", "SOS", "danger"</li>
+            <li>✓ Works even without location access</li>
           </ul>
-          <div className="location-troubleshooting">
-            <p><strong>⚠️ Location not working?</strong></p>
-            <p>• Enable WiFi (even without connecting)</p>
-            <p>• Check System Settings → Privacy & Security → Location Services</p>
-            <p>• Make sure your browser has location permission</p>
-            <p>• Move near a window or outdoors</p>
-            <p>• SOS still works without location!</p>
-          </div>
-        </div>        <div className="emergency-actions">
-          <h3>Quick Actions:</h3>
-          <div className="action-buttons">
-            <a href="tel:100" className="emergency-btn">📞 Call Police (100)</a>
-            <a href="tel:1091" className="emergency-btn">📞 Women Helpline (1091)</a>
-            <a href="tel:102" className="emergency-btn">📞 Ambulance (102)</a>
+
+          <div style={{
+            marginTop: 'var(--space-md)',
+            padding: 'var(--space-md)',
+            background: 'var(--soft-clay-coral-transparent)',
+            borderRadius: 'var(--radius-organic-sm)',
+            borderLeft: '4px solid var(--soft-clay-coral)'
+          }}>
+            <p style={{ fontWeight: 600, color: 'var(--soft-clay-coral-dark)', marginBottom: 'var(--space-xs)' }}>
+              ⚠️ Location Troubleshooting
+            </p>
+            <p style={{ fontSize: '0.85rem', color: 'var(--deep-sea-teal)', lineHeight: '1.6' }}>
+              Enable WiFi • Check browser permissions • Move near window • System Settings → Privacy → Location Services
+            </p>
           </div>
         </div>
-      </main>
+      </div>
     </div>
   );
 };

@@ -129,7 +129,15 @@ io.on('connection', (socket) => {
         
         if (twilioClient) {
           for (const contact of user.emergencyContacts) {
-            const phoneNumber = contact.phone || contact; // Handle both object and string format
+            // Skip empty contacts
+            if (!contact || !contact.phone || contact.phone.trim() === '') {
+              console.log(`⚠️  Skipping empty contact: ${contact?.name || 'Unknown'}`);
+              continue;
+            }
+            
+            const phoneNumber = contact.phone.trim();
+            const contactName = contact.name || 'Emergency Contact';
+            
             let message = `🚨 EMERGENCY SOS from ${user.name}! `;
             if (data.location && data.location.latitude && data.location.longitude) {
               message += `Location: https://maps.google.com/?q=${data.location.latitude},${data.location.longitude}`;
@@ -144,10 +152,10 @@ io.on('connection', (socket) => {
                 from: TWILIO_PHONE,
                 to: phoneNumber
               });
-              console.log(`✅ SMS sent to ${contact.name || phoneNumber} (${phoneNumber}) - SID: ${result.sid}`);
+              console.log(`✅ SMS sent to ${contactName} (${phoneNumber}) - SID: ${result.sid}`);
             } catch (smsErr) {
-              console.error(`❌ Failed to send SMS to ${phoneNumber}:`, smsErr.message);
-              console.error('Full error:', smsErr);
+              console.error(`❌ Failed to send SMS to ${contactName} (${phoneNumber}): ${smsErr.message}`);
+              if (smsErr.code) console.error(`   Error Code: ${smsErr.code}`);
             }
           }
         } else {

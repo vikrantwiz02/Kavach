@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const Login = ({ onLogin }) => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    if (error) setError('');
   };
 
   const handleSubmit = async (e) => {
@@ -27,7 +27,6 @@ const Login = ({ onLogin }) => {
 
       if (response.ok) {
         onLogin(data.user, data.token);
-        navigate('/dashboard');
       } else {
         setError(data.message || 'Login failed');
       }
@@ -41,48 +40,57 @@ const Login = ({ onLogin }) => {
   return (
     <div className="auth-container">
       <div className="auth-card">
-        <div className="logo">
-          <h1>🛡️ Kavach</h1>
-          <p>Women's Safety Platform</p>
+        <div className="auth-header">
+          <div className="auth-logo">K</div>
+          <h1 className="auth-title">Welcome to Kavach</h1>
+          <p className="auth-subtitle">Your shield of protection awaits</p>
         </div>
-        
+
+        {error && <div className="error-message">{error}</div>}
+
         <form onSubmit={handleSubmit} className="auth-form">
-          <h2>Login</h2>
-          
-          {error && <div className="error-message">{error}</div>}
-          
           <div className="form-group">
-            <label>Email</label>
+            <label className="form-label">Email Address</label>
             <input
               type="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
+              className="form-input"
+              placeholder="your.email@example.com"
               required
-              placeholder="Enter your email"
             />
           </div>
-          
+
           <div className="form-group">
-            <label>Password</label>
+            <label className="form-label">Password</label>
             <input
               type="password"
               name="password"
               value={formData.password}
               onChange={handleChange}
-              required
+              className="form-input"
               placeholder="Enter your password"
+              required
             />
           </div>
-          
-          <button type="submit" className="btn-primary" disabled={loading}>
-            {loading ? 'Logging in...' : 'Login'}
+
+          <button 
+            type="submit" 
+            className="auth-button" 
+            disabled={loading}
+            style={{ opacity: loading ? 0.7 : 1 }}
+          >
+            {loading ? 'Signing In...' : 'Sign In'}
           </button>
-          
-          <p className="auth-link">
-            Don't have an account? <Link to="/register">Register here</Link>
-          </p>
         </form>
+
+        <div className="auth-footer">
+          Don't have an account?{' '}
+          <Link to="/register" className="auth-link">
+            Create Account
+          </Link>
+        </div>
       </div>
     </div>
   );
