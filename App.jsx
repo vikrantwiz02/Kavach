@@ -6,7 +6,6 @@ import Dashboard from './Dashboard';
 import SOSButton from './SOSButton';
 import ComplaintForm from './ComplaintForm';
 import AdminDashboard from './AdminDashboard';
-import FakeCall from './FakeCall';
 import './App.css';
 
 const App = () => {
@@ -82,10 +81,6 @@ const App = () => {
           <Route 
             path="/admin" 
             element={user?.role === 'admin' ? <AdminDashboard user={user} /> : <Navigate to="/dashboard" />} 
-          />
-          <Route 
-            path="/fake-call" 
-            element={user ? <FakeCall /> : <Navigate to="/login" />} 
           />
           <Route path="/" element={<Navigate to={user ? "/dashboard" : "/login"} />} />
         </Routes>

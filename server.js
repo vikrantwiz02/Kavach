@@ -129,6 +129,7 @@ io.on('connection', (socket) => {
         
         if (twilioClient) {
           for (const contact of user.emergencyContacts) {
+            const phoneNumber = contact.phone || contact; // Handle both object and string format
             let message = `🚨 EMERGENCY SOS from ${user.name}! `;
             if (data.location && data.location.latitude && data.location.longitude) {
               message += `Location: https://maps.google.com/?q=${data.location.latitude},${data.location.longitude}`;
@@ -138,24 +139,26 @@ io.on('connection', (socket) => {
             message += ` Time: ${new Date().toLocaleString()}`;
             
             try {
-              await twilioClient.messages.create({
+              const result = await twilioClient.messages.create({
                 body: message,
                 from: TWILIO_PHONE,
-                to: contact
+                to: phoneNumber
               });
-              console.log(`✅ SMS sent to ${contact}`);
+              console.log(`✅ SMS sent to ${contact.name || phoneNumber} (${phoneNumber}) - SID: ${result.sid}`);
             } catch (smsErr) {
-              console.error(`❌ Failed to send SMS to ${contact}:`, smsErr.message);
+              console.error(`❌ Failed to send SMS to ${phoneNumber}:`, smsErr.message);
+              console.error('Full error:', smsErr);
             }
           }
         } else {
           console.log('⚠️  Twilio not configured - Simulating SMS notifications:');
           for (const contact of user.emergencyContacts) {
+            const phoneNumber = contact.phone || contact;
             let message = `🚨 SOS from ${user.name}`;
             if (data.location && data.location.latitude && data.location.longitude) {
               message += ` at https://maps.google.com/?q=${data.location.latitude},${data.location.longitude}`;
             }
-            console.log(`   → Would send to ${contact}: ${message}`);
+            console.log(`   → Would send to ${contact.name || phoneNumber} (${phoneNumber}): ${message}`);
           }
         }
       } else {
