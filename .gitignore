@@ -6,9 +6,9 @@ yarn.lock
 # Environment
 .env
 
-# Build
-public/bundle.js
-public/bundle.js.map
+# Build (keep bundle.js for Vercel)
+# public/bundle.js
+# public/bundle.js.map
 dist/
 build/
 
