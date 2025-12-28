@@ -9,6 +9,7 @@ const compression = require('compression');
 const path = require('path');
 const multer = require('multer');
 const { body, validationResult } = require('express-validator');
+const twilio = require('twilio');
 
 // Models
 const User = require('./UserModel');
@@ -17,6 +18,26 @@ const SOSAlert = require('./SOSModel');
 
 // Middleware
 const { authMiddleware, adminMiddleware, generateToken } = require('./authMiddleware');
+
+// Twilio Configuration
+const TWILIO_SID = process.env.TWILIO_SID;
+const TWILIO_AUTH = process.env.TWILIO_AUTH;
+const TWILIO_PHONE = process.env.TWILIO_PHONE;
+
+// Initialize Twilio client only if credentials are provided
+let twilioClient = null;
+if (TWILIO_SID && TWILIO_AUTH && TWILIO_PHONE && 
+    TWILIO_SID !== 'your_twilio_account_sid_here') {
+  try {
+    twilioClient = twilio(TWILIO_SID, TWILIO_AUTH);
+    console.log('📱 Twilio SMS service initialized');
+  } catch (err) {
+    console.warn('⚠️  Twilio initialization failed:', err.message);
+  }
+} else {
+  console.log('⚠️  Twilio not configured - SMS notifications disabled');
+  console.log('   To enable: Add TWILIO_SID, TWILIO_AUTH, TWILIO_PHONE to .env');
+}
 
 // Initialize Express
 const app = express();
@@ -97,7 +118,46 @@ io.on('connection', (socket) => {
         timestamp: new Date()
       });
 
-      // Notify emergency contacts
+      // Notify emergency contacts via SMS
+      const user = await User.findById(data.userId);
+      if (user && user.emergencyContacts && user.emergencyContacts.length > 0) {
+        console.log(`📧 Notifying ${user.emergencyContacts.length} emergency contacts for ${user.name}`);
+        
+        if (twilioClient) {
+          for (const contact of user.emergencyContacts) {
+            let message = `🚨 EMERGENCY SOS from ${user.name}! `;
+            if (data.location && data.location.latitude && data.location.longitude) {
+              message += `Location: https://maps.google.com/?q=${data.location.latitude},${data.location.longitude}`;
+            } else {
+              message += 'Location unavailable. Please call immediately!';
+            }
+            message += ` Time: ${new Date().toLocaleString()}`;
+            
+            try {
+              await twilioClient.messages.create({
+                body: message,
+                from: TWILIO_PHONE,
+                to: contact
+              });
+              console.log(`✅ SMS sent to ${contact}`);
+            } catch (smsErr) {
+              console.error(`❌ Failed to send SMS to ${contact}:`, smsErr.message);
+            }
+          }
+        } else {
+          console.log('⚠️  Twilio not configured - Simulating SMS notifications:');
+          for (const contact of user.emergencyContacts) {
+            let message = `🚨 SOS from ${user.name}`;
+            if (data.location && data.location.latitude && data.location.longitude) {
+              message += ` at https://maps.google.com/?q=${data.location.latitude},${data.location.longitude}`;
+            }
+            console.log(`   → Would send to ${contact}: ${message}`);
+          }
+        }
+      } else {
+        console.log('⚠️  No emergency contacts found for user');
+      }
+
       socket.emit('sos-confirmed', { alertId: sosAlert._id });
     } catch (error) {
       socket.emit('sos-error', { message: 'Failed to send SOS alert' });
