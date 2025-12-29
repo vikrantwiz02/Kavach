@@ -20,16 +20,8 @@ const App = () => {
   const [showThemeMenu, setShowThemeMenu] = useState(false);
 
   const themeOptions = [
-    { value: 'light', label: '☀️ Classic Light', description: 'Teal & coral elegance' },
-    { value: 'light-mint', label: '🌿 Fresh Mint', description: 'Green mint & coral red' },
-    { value: 'light-lavender', label: '💜 Lavender Dream', description: 'Purple & hot pink vibes' },
-    { value: 'light-coral', label: '🌺 Coral Sunset', description: 'Warm coral & orange' },
-    { value: 'dark-aurora', label: '🌌 Aurora Borealis', description: 'Purple, pink & cyan lights' },
-    { value: 'dark-sunset', label: '🌅 Sunset Blaze', description: 'Hot pink & orange fire' },
-    { value: 'dark-electric', label: '⚡ Electric Dreams', description: 'Neon green & cyan energy' },
-    { value: 'dark-toxic', label: '☢️ Toxic Glow', description: 'Radioactive lime & magenta' },
-    { value: 'dark-lava', label: '🌋 Lava Flow', description: 'Molten orange & yellow heat' },
-    { value: 'dark-deepsea', label: '🐋 Deep Sea', description: 'Bright cyan & electric blue' }
+    { value: 'light', label: '☀️ Light'},
+    { value: 'dark-aurora', label: '🌙 Dark'}
   ];
 
   useEffect(() => {
