@@ -30,18 +30,60 @@ if (TWILIO_SID && TWILIO_AUTH && TWILIO_PHONE &&
     TWILIO_SID !== 'your_twilio_account_sid_here') {
   try {
     twilioClient = twilio(TWILIO_SID, TWILIO_AUTH);
-    console.log('📱 Twilio SMS service initialized');
+    console.log('Twilio SMS service initialized');
   } catch (err) {
-    console.warn('⚠️  Twilio initialization failed:', err.message);
+    console.warn('Twilio initialization failed:', err.message);
   }
 } else {
-  console.log('⚠️  Twilio not configured - SMS notifications disabled');
+  console.log('Twilio not configured - SMS notifications disabled');
   console.log('   To enable: Add TWILIO_SID, TWILIO_AUTH, TWILIO_PHONE to .env');
 }
 
 // Initialize Express
 const app = express();
 const server = http.createServer(app);
+
+// Helper function for SMS notifications
+const sendSOSNotifications = async (user, location) => {
+  if (!user.emergencyContacts || user.emergencyContacts.length === 0) {
+    console.log('No emergency contacts found for user');
+    return;
+  }
+
+  console.log(`Notifying ${user.emergencyContacts.length} emergency contacts for ${user.name}`);
+  
+  const locationUrl = (location?.latitude && location?.longitude) 
+    ? `https://maps.google.com/?q=${location.latitude},${location.longitude}`
+    : 'Location unavailable. Please call immediately!';
+  
+  const timestamp = new Date().toLocaleString();
+  
+  if (twilioClient) {
+    const promises = user.emergencyContacts
+      .filter(contact => contact?.phone?.trim())
+      .map(async (contact) => {
+        const message = `EMERGENCY SOS from ${user.name}! Location: ${locationUrl} Time: ${timestamp}`;
+        try {
+          const result = await twilioClient.messages.create({
+            body: message,
+            from: TWILIO_PHONE,
+            to: contact.phone.trim()
+          });
+          console.log(`SMS sent to ${contact.name} (${contact.phone}) - SID: ${result.sid}`);
+        } catch (err) {
+          console.error(`Failed to send SMS to ${contact.name}: ${err.message}`);
+        }
+      });
+    await Promise.allSettled(promises);
+  } else {
+    console.log('Twilio not configured - Simulating SMS notifications:');
+    user.emergencyContacts.forEach(contact => {
+      if (contact?.phone) {
+        console.log(`   → Would send to ${contact.name} (${contact.phone})`);
+      }
+    });
+  }
+};
 
 // Socket.IO setup with better Vercel compatibility
 const io = socketIO(server, {
@@ -67,8 +109,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Database Connection
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/kavach')
-.then(() => console.log('✅ MongoDB Connected'))
-.catch(err => console.error('❌ MongoDB Connection Error:', err));
+.then(() => console.log('MongoDB Connected'))
+.catch(err => console.error('MongoDB Connection Error:', err));
 
 // File Upload Configuration
 const storage = multer.diskStorage({
@@ -122,59 +164,15 @@ io.on('connection', (socket) => {
         timestamp: new Date()
       });
 
-      // Notify emergency contacts via SMS
-      const user = await User.findById(data.userId);
-      if (user && user.emergencyContacts && user.emergencyContacts.length > 0) {
-        console.log(`📧 Notifying ${user.emergencyContacts.length} emergency contacts for ${user.name}`);
-        
-        if (twilioClient) {
-          for (const contact of user.emergencyContacts) {
-            // Skip empty contacts
-            if (!contact || !contact.phone || contact.phone.trim() === '') {
-              console.log(`⚠️  Skipping empty contact: ${contact?.name || 'Unknown'}`);
-              continue;
-            }
-            
-            const phoneNumber = contact.phone.trim();
-            const contactName = contact.name || 'Emergency Contact';
-            
-            let message = `🚨 EMERGENCY SOS from ${user.name}! `;
-            if (data.location && data.location.latitude && data.location.longitude) {
-              message += `Location: https://maps.google.com/?q=${data.location.latitude},${data.location.longitude}`;
-            } else {
-              message += 'Location unavailable. Please call immediately!';
-            }
-            message += ` Time: ${new Date().toLocaleString()}`;
-            
-            try {
-              const result = await twilioClient.messages.create({
-                body: message,
-                from: TWILIO_PHONE,
-                to: phoneNumber
-              });
-              console.log(`✅ SMS sent to ${contactName} (${phoneNumber}) - SID: ${result.sid}`);
-            } catch (smsErr) {
-              console.error(`❌ Failed to send SMS to ${contactName} (${phoneNumber}): ${smsErr.message}`);
-              if (smsErr.code) console.error(`   Error Code: ${smsErr.code}`);
-            }
-          }
-        } else {
-          console.log('⚠️  Twilio not configured - Simulating SMS notifications:');
-          for (const contact of user.emergencyContacts) {
-            const phoneNumber = contact.phone || contact;
-            let message = `🚨 SOS from ${user.name}`;
-            if (data.location && data.location.latitude && data.location.longitude) {
-              message += ` at https://maps.google.com/?q=${data.location.latitude},${data.location.longitude}`;
-            }
-            console.log(`   → Would send to ${contact.name || phoneNumber} (${phoneNumber}): ${message}`);
-          }
-        }
-      } else {
-        console.log('⚠️  No emergency contacts found for user');
+      // Notify emergency contacts
+      const user = await User.findById(data.userId).lean();
+      if (user) {
+        await sendSOSNotifications(user, data.location);
       }
 
       socket.emit('sos-confirmed', { alertId: sosAlert._id });
     } catch (error) {
+      console.error('SOS alert error:', error);
       socket.emit('sos-error', { message: 'Failed to send SOS alert' });
     }
   });
@@ -477,8 +475,8 @@ app.get('*', (req, res) => {
 if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
   const PORT = process.env.PORT || 3000;
   server.listen(PORT, () => {
-    console.log(`🚀 Kavach Server running on port ${PORT}`);
-    console.log(`📱 Open http://localhost:${PORT} in your browser`);
+    console.log(`Kavach Server running on port ${PORT}`);
+    console.log(`Open http://localhost:${PORT} in your browser`);
   });
 }
 

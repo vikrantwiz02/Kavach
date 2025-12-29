@@ -151,7 +151,7 @@ const AdminDashboard = ({ user }) => {
     <div className="admin-dashboard">
       <header className="admin-header">
         <button onClick={() => navigate('/dashboard')} className="btn-back">← Back</button>
-        <h1>⚙️ Admin Dashboard</h1>
+        <h1>Admin Dashboard</h1>
         <span className="admin-badge">Administrator</span>
       </header>
 
@@ -179,13 +179,13 @@ const AdminDashboard = ({ user }) => {
           className={`tab-btn ${activeTab === 'sos' ? 'active' : ''}`}
           onClick={() => setActiveTab('sos')}
         >
-          🚨 Active SOS Alerts ({sosAlerts.length})
+          Active SOS Alerts ({sosAlerts.length})
         </button>
         <button 
           className={`tab-btn ${activeTab === 'complaints' ? 'active' : ''}`}
           onClick={() => setActiveTab('complaints')}
         >
-          📝 Complaints ({complaints.length})
+          Complaints ({complaints.length})
         </button>
       </div>
 
@@ -199,7 +199,7 @@ const AdminDashboard = ({ user }) => {
                 {sosAlerts.map((alert) => (
                   <div key={alert._id} className="alert-card critical">
                     <div className="alert-header">
-                      <h3>🚨 SOS Alert</h3>
+                      <h3>SOS Alert</h3>
                       <span className="alert-time">
                         {new Date(alert.createdAt).toLocaleString()}
                       </span>
@@ -211,7 +211,7 @@ const AdminDashboard = ({ user }) => {
                       <p><strong>Trigger:</strong> {alert.triggerType.toUpperCase()}</p>
                       
                       <div className="location-details">
-                        <strong>📍 Location:</strong>
+                        <strong>Location:</strong>
                         <p>Lat: {alert.location.latitude.toFixed(6)}</p>
                         <p>Long: {alert.location.longitude.toFixed(6)}</p>
                         <a 

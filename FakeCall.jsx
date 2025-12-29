@@ -76,18 +76,18 @@ const FakeCall = () => {
   };
 
   const presetCallers = [
-    { name: 'Mom', emoji: '👩' },
-    { name: 'Dad', emoji: '👨' },
-    { name: 'Boss', emoji: '💼' },
-    { name: 'Doctor', emoji: '⚕️' },
-    { name: 'Friend', emoji: '👯' },
+    { name: 'Mom', emoji: 'M' },
+    { name: 'Dad', emoji: 'D' },
+    { name: 'Boss', emoji: 'B' },
+    { name: 'Doctor', emoji: 'Dr' },
+    { name: 'Friend', emoji: 'F' },
   ];
 
   return (
     <div className="fake-call-container">
       <header className="fake-call-header">
         <button onClick={() => navigate('/dashboard')} className="btn-back">← Back</button>
-        <h1>📞 Fake Call Simulator</h1>
+        <h1>Fake Call Simulator</h1>
       </header>
 
       {!isRinging && !isInCall ? (
@@ -165,7 +165,7 @@ const FakeCall = () => {
           <div className="call-screen">
             <div className="caller-info">
               <div className="caller-avatar">
-                {presetCallers.find(c => c.name === callerName)?.emoji || '📞'}
+                {presetCallers.find(c => c.name === callerName)?.emoji || '☎'}
               </div>
               <h2>{callerName}</h2>
               <p>Incoming call...</p>
@@ -173,10 +173,10 @@ const FakeCall = () => {
 
             <div className="call-actions">
               <button className="btn-decline" onClick={endCall}>
-                📵 Decline
+                Decline
               </button>
               <button className="btn-answer" onClick={answerCall}>
-                📞 Answer
+                Answer
               </button>
             </div>
           </div>
@@ -186,7 +186,7 @@ const FakeCall = () => {
           <div className="call-screen">
             <div className="caller-info">
               <div className="caller-avatar">
-                {presetCallers.find(c => c.name === callerName)?.emoji || '📞'}
+                {presetCallers.find(c => c.name === callerName)?.emoji || '☎'}
               </div>
               <h2>{callerName}</h2>
               <p className="call-duration">{formatTime(callDuration)}</p>

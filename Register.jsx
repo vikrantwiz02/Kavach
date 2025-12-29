@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
+const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+const isValidPhone = (phone) => /^\+?[1-9]\d{1,14}$/.test(phone.replace(/[\s-]/g, ''));
+
 const Register = ({ onRegister }) => {
   const [formData, setFormData] = useState({
     name: '',
@@ -28,6 +31,7 @@ const Register = ({ onRegister }) => {
       setError('Maximum 5 emergency contacts allowed');
       return;
     }
+    setError('');
     setFormData({
       ...formData,
       emergencyContacts: [...formData.emergencyContacts, { name: '', phone: '', relation: '' }]
@@ -46,18 +50,46 @@ const Register = ({ onRegister }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    setLoading(true);
+
+    // Client-side validation
+    if (formData.name.trim().length < 2) {
+      setError('Name must be at least 2 characters');
+      return;
+    }
+
+    if (!isValidEmail(formData.email)) {
+      setError('Please enter a valid email address');
+      return;
+    }
+
+    if (!isValidPhone(formData.phone)) {
+      setError('Please enter a valid phone number');
+      return;
+    }
+
+    if (formData.password.length < 6) {
+      setError('Password must be at least 6 characters');
+      return;
+    }
 
     // Validate emergency contacts
     const validContacts = formData.emergencyContacts.filter(
-      c => c.name && c.phone && c.relation
+      c => c.name.trim() && c.phone.trim() && c.relation.trim()
     );
     
     if (validContacts.length === 0) {
       setError('Please add at least one complete emergency contact');
-      setLoading(false);
       return;
     }
+
+    // Validate emergency contact phone numbers
+    const invalidContact = validContacts.find(c => !isValidPhone(c.phone));
+    if (invalidContact) {
+      setError('Please enter valid phone numbers for emergency contacts');
+      return;
+    }
+
+    setLoading(true);
 
     try {
       const response = await fetch('/api/auth/register', {
@@ -143,7 +175,7 @@ const Register = ({ onRegister }) => {
 
           {/* Emergency Contacts Section */}
           <div className="emergency-contacts-section">
-            <h3>🛡️ Emergency Contacts</h3>
+            <h3>Emergency Contacts</h3>
 
             {formData.emergencyContacts.map((contact, index) => (
               <div key={index} className="emergency-contact-item">

@@ -20,8 +20,8 @@ const App = () => {
   const [showThemeMenu, setShowThemeMenu] = useState(false);
 
   const themeOptions = [
-    { value: 'light', label: '☀️ Light'},
-    { value: 'dark-aurora', label: '🌙 Dark'}
+    { value: 'light', label: 'Light'},
+    { value: 'dark-aurora', label: 'Dark'}
   ];
 
   useEffect(() => {
@@ -62,18 +62,13 @@ const App = () => {
     return () => document.removeEventListener('click', handleClickOutside);
   }, [showThemeMenu]);
 
-  const toggleTheme = () => {
-    setTheme(prev => prev === 'light' ? 'dark' : 'light');
-  };
-
   const changeTheme = (newTheme) => {
     setTheme(newTheme);
     setShowThemeMenu(false);
   };
 
   const getCurrentThemeLabel = () => {
-    const current = themeOptions.find(opt => opt.value === theme);
-    return current ? current.label : '🌙 Theme';
+    return theme === 'light' ? 'Light' : 'Dark';
   };
 
   const fetchCurrentUser = async (token) => {
@@ -131,11 +126,8 @@ const App = () => {
                   className={`theme-option ${theme === option.value ? 'active' : ''}`}
                   onClick={() => changeTheme(option.value)}
                 >
-                  <div className="theme-option-header">
-                    <span className="theme-option-label">{option.label}</span>
-                    {theme === option.value && <span className="theme-checkmark">✓</span>}
-                  </div>
-                  <span className="theme-option-description">{option.description}</span>
+                  <span className="theme-option-label">{option.label}</span>
+                  {theme === option.value && <span className="theme-checkmark">✓</span>}
                 </button>
               ))}
             </div>

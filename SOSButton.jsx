@@ -19,12 +19,12 @@ const SOSButton = ({ user }) => {
     let locationData = null;
     
     try {
-      setStatus('📍 Getting your location...');
+      setStatus('Getting your location...');
       locationData = await getCurrentLocation();
-      setStatus('🚨 Sending SOS alert with location...');
+      setStatus('Sending SOS alert with location...');
     } catch (error) {
       console.warn('Location unavailable, proceeding without it:', error);
-      setStatus('🚨 Sending SOS alert (location unavailable)...');
+      setStatus('Sending SOS alert (location unavailable)...');
     }
 
     // Send SOS via Socket.IO (with or without location)
@@ -41,9 +41,9 @@ const SOSButton = ({ user }) => {
     // Try to start continuous location tracking
     if (locationData) {
       startLocationTracking();
-      setStatus('✅ SOS Active - Location broadcasting every 30 seconds');
+      setStatus('SOS Active - Location broadcasting every 30 seconds');
     } else {
-      setStatus('✅ SOS Active - Emergency contacts notified (location unavailable)');
+      setStatus('SOS Active - Emergency contacts notified (location unavailable)');
     }
   };
 
@@ -58,17 +58,17 @@ const SOSButton = ({ user }) => {
     newSocket.emit('user-online', user.id);
 
     newSocket.on('sos-confirmed', (data) => {
-      setStatus('✅ SOS Alert sent successfully! Emergency contacts notified.');
+      setStatus('SOS Alert sent successfully! Emergency contacts notified.');
     });
 
     newSocket.on('sos-error', (data) => {
-      setStatus('❌ Failed to send SOS alert. Please try again.');
+      setStatus('Failed to send SOS alert. Please try again.');
       setIsActive(false);
     });
 
     // Request location permission on page load
     if (navigator.geolocation) {
-      setStatus('📍 Requesting location access...');
+      setStatus('Requesting location access...');
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const locationData = {
@@ -77,7 +77,7 @@ const SOSButton = ({ user }) => {
             accuracy: position.coords.accuracy
           };
           setLocation(locationData);
-          setStatus('✅ Location access ready!');
+          setStatus('Location access ready!');
         },
         (error) => {
           console.log('Initial location error:', error.code, error.message);
@@ -90,11 +90,11 @@ const SOSButton = ({ user }) => {
                 accuracy: position.coords.accuracy
               };
               setLocation(locationData);
-              setStatus('✅ Location access ready (approximate)');
+              setStatus('Location access ready (approximate)');
             },
             (retryError) => {
               console.error('Location retry failed:', retryError);
-              setStatus('⚠️ Location unavailable. You can still use SOS but location won\'t be shared.');
+              setStatus('Location unavailable. You can still use SOS but location won\'t be shared.');
             },
             { enableHighAccuracy: false, timeout: 10000, maximumAge: 60000 }
           );
@@ -102,7 +102,7 @@ const SOSButton = ({ user }) => {
         { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
       );
     } else {
-      setStatus('❌ Geolocation not supported by your browser');
+      setStatus('Geolocation not supported by your browser');
     }
 
     // Initialize Web Speech API for voice activation
@@ -115,13 +115,13 @@ const SOSButton = ({ user }) => {
 
       recognitionRef.current.onresult = (event) => {
         const transcript = event.results[event.results.length - 1][0].transcript.toLowerCase();
-        console.log('🎤 Voice detected:', transcript);
+        console.log('Voice detected:', transcript);
         
         // Trigger SOS on specific phrases
         if (transcript.includes('help') || transcript.includes('emergency') || 
             transcript.includes('sos') || transcript.includes('danger')) {
-          console.log('🚨 SOS trigger word detected!');
-          setStatus('🎤 Voice command "' + transcript + '" detected! Activating SOS...');
+          console.log('SOS trigger word detected!');
+          setStatus('Voice command "' + transcript + '" detected! Activating SOS...');
           // Use ref to call the latest version of activateSOS
           if (activateSOSRef.current) {
             activateSOSRef.current('voice');
@@ -132,21 +132,21 @@ const SOSButton = ({ user }) => {
       };
 
       recognitionRef.current.onstart = () => {
-        console.log('🎤 Voice recognition started');
-        setStatus('🎤 Listening for "help", "emergency", "SOS", or "danger"...');
+        console.log('Voice recognition started');
+        setStatus('Listening for "help", "emergency", "SOS", or "danger"...');
       };
 
       recognitionRef.current.onerror = (event) => {
-        console.error('❌ Speech recognition error:', event.error);
+        console.error('Speech recognition error:', event.error);
         if (event.error === 'not-allowed' || event.error === 'permission-denied') {
-          setStatus('❌ Microphone access denied. Please enable in browser settings.');
+          setStatus('Microphone access denied. Please enable in browser settings.');
           setListening(false);
         } else if (event.error === 'no-speech') {
           console.log('No speech detected, continuing to listen...');
         } else if (event.error === 'aborted') {
           console.log('Recognition aborted');
         } else {
-          setStatus('⚠️ Voice recognition error: ' + event.error);
+          setStatus('Voice recognition error: ' + event.error);
         }
       };
 
@@ -180,51 +180,43 @@ const SOSButton = ({ user }) => {
         return;
       }
 
-      // Try with high accuracy first
+      const options = {
+        enableHighAccuracy: true,
+        timeout: 8000,
+        maximumAge: 0
+      };
+
+      const fallbackOptions = {
+        enableHighAccuracy: false,
+        timeout: 10000,
+        maximumAge: 60000
+      };
+
+      const handleSuccess = (position) => {
+        const locationData = {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          accuracy: position.coords.accuracy
+        };
+        setLocation(locationData);
+        resolve(locationData);
+      };
+
+      const handleError = (error) => {
+        const errorMessages = {
+          [error.PERMISSION_DENIED]: 'Please allow location access in your browser settings.',
+          [error.POSITION_UNAVAILABLE]: 'Try moving to a window or enabling WiFi/GPS on your device.',
+          [error.TIMEOUT]: 'Location request timed out. Try again.'
+        };
+        const message = errorMessages[error.code] || 'Unknown error occurred.';
+        reject(new Error(`Failed to get location. ${message}`));
+      };
+
+      // Try high accuracy first, fallback to low accuracy on error
       navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const locationData = {
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-            accuracy: position.coords.accuracy
-          };
-          setLocation(locationData);
-          resolve(locationData);
-        },
-        (error) => {
-          console.error('High accuracy location failed:', error.code, error.message);
-          // Fallback: Try with lower accuracy
-          navigator.geolocation.getCurrentPosition(
-            (position) => {
-              const locationData = {
-                latitude: position.coords.latitude,
-                longitude: position.coords.longitude,
-                accuracy: position.coords.accuracy
-              };
-              setLocation(locationData);
-              resolve(locationData);
-            },
-            (retryError) => {
-              let errorMessage = 'Failed to get location. ';
-              switch(retryError.code) {
-                case retryError.PERMISSION_DENIED:
-                  errorMessage += 'Please allow location access in your browser settings.';
-                  break;
-                case retryError.POSITION_UNAVAILABLE:
-                  errorMessage += 'Try moving to a window or enabling WiFi/GPS on your device.';
-                  break;
-                case retryError.TIMEOUT:
-                  errorMessage += 'Location request timed out. Try again.';
-                  break;
-                default:
-                  errorMessage += 'Unknown error occurred.';
-              }
-              reject(new Error(errorMessage));
-            },
-            { enableHighAccuracy: false, timeout: 10000, maximumAge: 60000 }
-          );
-        },
-        { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 }
+        handleSuccess,
+        () => navigator.geolocation.getCurrentPosition(handleSuccess, handleError, fallbackOptions),
+        options
       );
     });
   };
@@ -270,7 +262,7 @@ const SOSButton = ({ user }) => {
 
   const toggleVoiceActivation = () => {
     if (!recognitionRef.current) {
-      setStatus('❌ Voice recognition not supported in your browser. Use Chrome or Edge.');
+      setStatus('Voice recognition not supported in your browser. Use Chrome or Edge.');
       return;
     }
 
@@ -286,21 +278,21 @@ const SOSButton = ({ user }) => {
       try {
         recognitionRef.current.start();
         setListening(true);
-        setStatus('🎤 Voice activation enabled - Say "help", "emergency", or "SOS"');
+        setStatus('Voice activation enabled - Say "help", "emergency", or "SOS"');
       } catch (e) {
         console.error('Error starting recognition:', e);
-        setStatus('❌ Could not start voice recognition. Check microphone permissions.');
+        setStatus('Could not start voice recognition. Check microphone permissions.');
       }
     }
   };
 
   const requestLocationPermission = async () => {
     try {
-      setStatus('📍 Requesting location permission...');
+      setStatus('Requesting location permission...');
       await getCurrentLocation();
-      setStatus('✅ Location access granted!');
+      setStatus('Location access granted!');
     } catch (error) {
-      setStatus(`❌ ${error.message}`);
+      setStatus(`${error.message}`);
     }
   };
 
@@ -325,7 +317,7 @@ const SOSButton = ({ user }) => {
             onClick={isActive ? deactivateSOS : () => activateSOS('button')}
           >
             <span className="sos-button-icon">
-              {isActive ? '✓' : '🛡️'}
+              {isActive ? '✓' : '!'}
             </span>
             <span className="sos-button-text">
               {isActive ? 'ACTIVE' : 'SOS'}
@@ -340,7 +332,7 @@ const SOSButton = ({ user }) => {
             onClick={toggleVoiceActivation}
           >
             <div className="voice-toggle-label">
-              <span>🎤</span>
+              <span>♪</span>
               <span>Voice Activation</span>
             </div>
             <div className={`voice-toggle-switch ${listening ? 'active' : ''}`} />
@@ -367,7 +359,7 @@ const SOSButton = ({ user }) => {
                 transition: 'all 0.3s ease'
               }}
             >
-              📍 Test Location Access
+              Test Location Access
             </button>
           )}
 
@@ -380,7 +372,7 @@ const SOSButton = ({ user }) => {
               marginTop: 'var(--space-md)'
             }}>
               <h4 style={{ color: 'var(--deep-sea-teal)', marginBottom: 'var(--space-sm)', fontWeight: 700 }}>
-                📍 Location Acquired
+                Location Acquired
               </h4>
               <p style={{ fontSize: '0.85rem', color: 'var(--deep-sea-teal-light)', marginBottom: '0.25rem' }}>
                 {location.latitude.toFixed(6)}, {location.longitude.toFixed(6)}
@@ -413,19 +405,19 @@ const SOSButton = ({ user }) => {
         {/* Quick Emergency Numbers */}
         <div className="glass-card" style={{ marginTop: 'var(--space-xl)', padding: 'var(--space-lg)' }}>
           <h3 style={{ color: 'var(--deep-sea-teal)', marginBottom: 'var(--space-md)', fontSize: '1.2rem', fontWeight: 700 }}>
-            ⚡ Direct Emergency Lines
+            Direct Emergency Lines
           </h3>
           <div style={{ display: 'grid', gap: 'var(--space-sm)' }}>
-            <a href="tel:100" className="help-link">🚓 Police: 100</a>
-            <a href="tel:1091" className="help-link">👮 Women Helpline: 1091</a>
-            <a href="tel:102" className="help-link">🚑 Ambulance: 102</a>
+            <a href="tel:100" className="help-link">Police: 100</a>
+            <a href="tel:1091" className="help-link">Women Helpline: 1091</a>
+            <a href="tel:102" className="help-link">Ambulance: 102</a>
           </div>
         </div>
 
         {/* Information Panel */}
         <div className="glass-card" style={{ marginTop: 'var(--space-lg)', padding: 'var(--space-lg)' }}>
           <h3 style={{ color: 'var(--deep-sea-teal)', marginBottom: 'var(--space-md)', fontSize: '1.1rem', fontWeight: 700 }}>
-            🛡️ How Protection Works
+            How Protection Works
           </h3>
           <ul style={{ 
             listStyle: 'none', 
@@ -449,7 +441,7 @@ const SOSButton = ({ user }) => {
             borderLeft: '4px solid var(--soft-clay-coral)'
           }}>
             <p style={{ fontWeight: 600, color: 'var(--soft-clay-coral-dark)', marginBottom: 'var(--space-xs)' }}>
-              ⚠️ Location Troubleshooting
+              Location Troubleshooting
             </p>
             <p style={{ fontSize: '0.85rem', color: 'var(--deep-sea-teal)', lineHeight: '1.6' }}>
               Enable WiFi • Check browser permissions • Move near window • System Settings → Privacy → Location Services
